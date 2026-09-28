@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Teleop.Tests;
+package org.firstinspires.ftc.teamcode.tests;
 
 import com.pedropathing.drivetrain.DrivePowers;
 import com.pedropathing.follower.Follower;
