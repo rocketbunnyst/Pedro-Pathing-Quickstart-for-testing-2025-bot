@@ -67,6 +67,11 @@ public abstract class RobotOpMode extends OpMode {
         loopTimer.reset();
         context.telemetry.addData("Robot/alliance", alliance());
 
+        telemetry.addData("Press X", "for BLUE Alliance");
+        telemetry.addData("Press B", "for RED Alliance");
+        if (gamepad1.x) { setAlliance(Alliance.BLUE); }
+        if (gamepad1.b) { setAlliance(Alliance.RED); }
+
         Scheduler.execute();
         context.telemetry.update();
     }
@@ -75,7 +80,7 @@ public abstract class RobotOpMode extends OpMode {
         context.telemetry.addData("Robot/loop time", loopTimer.milliseconds());
         loopTimer.reset();
         hubs.forEach(LynxModule::clearBulkCache);
-        drivetrain.update();
+        drivetrain.update(); //updates follower
         context.telemetry.addData("Robot/alliance", alliance());
 
         runnable.run();

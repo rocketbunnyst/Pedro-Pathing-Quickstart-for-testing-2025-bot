@@ -15,10 +15,10 @@ import org.firstinspires.ftc.teamcode.util.Context;
 
 @Config
 public final class Drivetrain implements AutoCloseable {
-    private static Pose poseTransfer;
+    private static Pose poseTransfer; // updates made in Periodic
     public final Follower follower;
     private final Context context;
-    double speedScalar = 0.7;
+    public double speedScalar = 0.75;
     private boolean lockAutoAim = false;
 
     public Drivetrain(Context context) {
@@ -39,6 +39,11 @@ public final class Drivetrain implements AutoCloseable {
         lockAutoAim = false;
     }
 
+    public void usePreviousStartingPose() {
+        follower.setPose(poseTransfer);
+    }
+
+   // Field Centric Manual Drive for use in Teleop
     public void fieldCentricDrive(double forward, double lateral, double turn) {
         forward = forward * speedScalar;
         lateral = lateral * speedScalar;
