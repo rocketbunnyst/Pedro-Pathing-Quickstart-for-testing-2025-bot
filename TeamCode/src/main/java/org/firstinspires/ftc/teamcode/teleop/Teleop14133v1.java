@@ -25,13 +25,22 @@ public class Teleop14133v1 extends RobotOpMode {
     public void loop() {
         wrapLoop(() -> {
 
+            // Right Bumper to launch
+            if (gamepad1.rightBumperWasPressed()) intake.launch3();
+
+            // Left Bumper to toggle intake
+            if (gamepad1.leftBumperWasPressed()) intake.toggleIntake();
+
+            // X Toggles flywheel on and off
+            if (gamepad1.xWasPressed()) flywheel.toggle();
+
             // Auto aim unlocks if the right stick is moved
             if (Math.abs(gamepad1.right_stick_x) >= 0.1) drivetrain.unlockAutoAim();
 
             // A to lock auto aim on the nearest Hive
             if (gamepad1.a) drivetrain.lockAutoAim();
 
-            // Reset Odometry, intake face in at right corner
+            // Y to Reset Odometry, intake face in at right corner
             if (gamepad1.y) drivetrain.follower.setPose(new Pose(8, 8, Math.toRadians(180)));
 
             // Run field centric drive with AutoHold

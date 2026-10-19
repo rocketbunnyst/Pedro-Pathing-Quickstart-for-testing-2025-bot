@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 import java.util.List;
 
@@ -15,8 +17,8 @@ public abstract class RobotOpMode extends OpMode {
     private static Alliance currentAlliance = Alliance.RED;
     protected Drivetrain drivetrain;
     //protected Turret turret;
-    //protected Flywheel flywheel;
-    //protected Intake intake;
+    protected Flywheel flywheel;
+    protected Intake intake;
     //protected Hood hood;
     //protected IntakeSensor intakeSensor;
     //protected Leds leds;
@@ -40,17 +42,17 @@ public abstract class RobotOpMode extends OpMode {
 
         drivetrain = new Drivetrain(context);
         //turret = new Turret(context);
-        //flywheel = new Flywheel(context);
-        //intake = new Intake(context);
+        flywheel = new Flywheel(context);
+        intake = new Intake(context);
         //hood = new Hood(context);
         //intakeSensor = new IntakeSensor(context);
         //leds = new Leds(context);
 
         schedule(
-                drivetrain.periodic()
+                drivetrain.periodic(),
                 //turret.periodic(),
-                //flywheel.periodic(),
-                //intake.periodic(),
+                flywheel.periodic(),
+                intake.periodic()
                 //hood.periodic(),
                 //intakeSensor.periodic(),
                 //leds.periodic()

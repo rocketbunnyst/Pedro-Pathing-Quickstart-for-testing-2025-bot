@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import static com.pedropathing.api.Paths.curve;
 import static com.pedropathing.api.Paths.line;
 import static com.pedropathing.ivy.Scheduler.schedule;
+import static com.pedropathing.ivy.commands.Commands.instant;
+import static com.pedropathing.ivy.commands.Commands.waitUntil;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
@@ -40,13 +42,30 @@ public class RightSideExample extends RobotOpMode {
         drivetrain.follower.update();
     }
 
+    /*  AVAILABLE COMMANDS
+
+    instant(flywheel::on) -- turns on the flywheel at the beginning of the auto
+    waitUntil(flywheel::atTarget) -- waits until the flywheel is at the target velocity
+    intake.launch3() -- feeds balls into the launcher for 2 seconds
+    instant(intake::intake) -- starts the intake sequence - it will run until it gets 3 balls, make sure to turn it off manually as a safeguard!
+    instant(intake::off) -- turns off the intake
+
+    sequential( - does each command in list order
+    parallel( - does each command at the same time, waiting until all finish before moving on
+    race( - like parallel, but as soon as 1 finishes, it cancels the others and moves on
+
+     */
+
     @Override
     public void start() {
         schedule(
                 sequential(
-                follow(drivetrain.follower, toLaunchPreload()),
-                // Add launch command here
-                follow(drivetrain.follower, toPark())
+                        instant(flywheel::on),
+                        follow(drivetrain.follower, toLaunchPreload()),
+                        waitUntil(flywheel::atTarget),
+                        intake.launch3(),
+                        follow(drivetrain.follower, toPark()),
+                        instant(flywheel::off)
         ));
     }
 

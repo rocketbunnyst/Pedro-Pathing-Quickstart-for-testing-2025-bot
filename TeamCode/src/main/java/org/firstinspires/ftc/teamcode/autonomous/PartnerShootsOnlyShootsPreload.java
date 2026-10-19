@@ -59,6 +59,20 @@ public class PartnerShootsOnlyShootsPreload extends RobotOpMode {
         drivetrain.follower.update();
     }
 
+    /*  AVAILABLE COMMANDS
+
+instant(flywheel::on) -- turns on the flywheel at the beginning of the auto
+waitUntil(flywheel::atTarget) -- waits until the flywheel is at the target velocity
+intake.launch3() -- feeds balls into the launcher for 2 seconds
+instant(intake::intake) -- starts the intake sequence - it will run until it gets 3 balls or is turned off manually
+instant(intake::off) -- turns off the intake
+
+sequential( - does each command in list order
+parallel( - does each command at the same time, waiting until all finish before moving on
+race( - like parallel, but as soon as 1 finishes, it cancels the others and moves on
+
+ */
+
     @Override
     public void start() {
         schedule(
