@@ -13,8 +13,8 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.teamcode.util.Context;
 
 public final class Flywheel {
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0, 0);
-    public static int velocityTolerance = 25;
+    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(1.16, 0, 0, 19.6);
+    public static int velocityTolerance = 50;
     private final DcMotorEx flywheelMotorRight;
     private final DcMotorEx flywheelMotorLeft;
 

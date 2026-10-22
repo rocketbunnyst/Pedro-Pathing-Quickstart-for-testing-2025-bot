@@ -11,6 +11,7 @@ import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.util.RobotOpMode;
 
 @Autonomous
@@ -20,14 +21,14 @@ public class PartnerHasNoAuto extends RobotOpMode {
 
     private final Pose start = poseFactory.of(56, 8, 90);
     private final Pose shootpreload = poseFactory.of(56, 32, 90);
-    private final Pose collectflower = poseFactory.of(9.9277, 48.552, 180);
-    private final Pose shootflower = poseFactory.of(59, 108, 270);
+    private final Pose collectflower = poseFactory.of(13, 48, 180);
+    private final Pose shootflower = poseFactory.of(57, 108, 270);
     private final Pose shootflowerControl1 = poseFactory.of(18.8295, 103.1199, 0);
-    private final Pose collectflowertwo = poseFactory.of(50, 134, 90);
-    private final Pose shootflowertwo = poseFactory.of(59, 108, 270);
+    private final Pose collectflowertwo = poseFactory.of(48, 128, 90);
+    private final Pose shootflowertwo = poseFactory.of(57, 108, 270);
     private final Pose lineupgarden = poseFactory.of(26, 9, 180);
     private final Pose lineupgardenControl1 = poseFactory.of(9, 112, 0);
-    private final Pose collectgarden = poseFactory.of(9, 9, 180);
+    private final Pose collectgarden = poseFactory.of(10, 9, 180);
     private final Pose shootgarden = poseFactory.of(56, 32, 90);
     private final Pose park = poseFactory.of(14, 94, -76.3279);
     private final Pose parkControl1 = poseFactory.of(27, 40, 0);
@@ -37,11 +38,21 @@ public class PartnerHasNoAuto extends RobotOpMode {
     }
 
     public Path collectflower() {
-        return line(shootpreload, collectflower).constant(collectflower);
+        return line(shootpreload, collectflower).constant(collectflower)
+                .with(
+                        Constants.foresightConfig.maxPathSpeed.at(0.8)
+//                        Constants.foresightConfig.maxDecelerationScale.at(0.75),
+//                        Constants.foresightConfig.headingDriveRatio.at(0.7)
+                );
     }
 
     public Path shootflower() {
-        return curve(collectflower, shootflowerControl1, shootflower).tangent();
+        return curve(collectflower, shootflowerControl1, shootflower).tangent()
+                .with(
+                        Constants.foresightConfig.maxPathSpeed.at(0.7)
+//                        Constants.foresightConfig.maxDecelerationScale.at(0.75),
+//                        Constants.foresightConfig.headingDriveRatio.at(0.7)
+                );
     }
 
     public Path collectflowertwo() {
@@ -53,7 +64,10 @@ public class PartnerHasNoAuto extends RobotOpMode {
     }
 
     public Path lineupgarden() {
-        return curve(shootflowertwo, lineupgardenControl1, lineupgarden).tangent();
+        return curve(shootflowertwo, lineupgardenControl1, lineupgarden).tangent()
+                .with(
+                        Constants.foresightConfig.maxPathSpeed.at(0.8)
+                );
     }
 
     public Path collectgarden() {
