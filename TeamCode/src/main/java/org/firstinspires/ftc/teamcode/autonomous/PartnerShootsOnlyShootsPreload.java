@@ -66,6 +66,7 @@ waitUntil(flywheel::atTarget) -- waits until the flywheel is at the target veloc
 intake.launch3() -- feeds balls into the launcher for 2 seconds
 instant(intake::intake) -- starts the intake sequence - it will run until it gets 3 balls or is turned off manually
 instant(intake::off) -- turns off the intake
+waitMs(2000) -- waits for 2 seconds (2000 Milli-Seconds)
 
 sequential( - does each command in list order
 parallel( - does each command at the same time, waiting until all finish before moving on
