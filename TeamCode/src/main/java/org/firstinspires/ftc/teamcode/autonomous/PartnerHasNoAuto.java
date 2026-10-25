@@ -22,16 +22,22 @@ public class PartnerHasNoAuto extends RobotOpMode {
 
     private final Pose start = poseFactory.of(56, 8, 90);
     private final Pose shootpreload = poseFactory.of(56, 32, 90);
+    private final Pose collectflowerStart = poseFactory.of(56, 32, 90);
     private final Pose collectflower = poseFactory.of(13, 48, 180);
+    private final Pose shootflowerStart = poseFactory.of(13, 48, 180);
     private final Pose shootflower = poseFactory.of(57, 108, 270);
     private final Pose shootflowerControl1 = poseFactory.of(18.8295, 103.1199, 0);
-    private final Pose collectflowertwo = poseFactory.of(48, 128, 90);
+    private final Pose collectflowertwoStart = poseFactory.of(57, 108, 270);
+    private final Pose collectflowertwo = poseFactory.of(48, 126, 90);
+    private final Pose shootflowertwoStart = poseFactory.of(48, 126, 90);
     private final Pose shootflowertwo = poseFactory.of(57, 108, 270);
+    private final Pose lineupgardenStart = poseFactory.of(57, 108, 270);
     private final Pose lineupgarden = poseFactory.of(26, 9, 180);
     private final Pose lineupgardenControl1 = poseFactory.of(9, 112, 0);
     private final Pose collectgarden = poseFactory.of(10, 9, 180);
+    private final Pose shootgardenStart = poseFactory.of(10, 9, 180);
     private final Pose shootgarden = poseFactory.of(56, 32, 90);
-    private final Pose park = poseFactory.of(14, 94, -76.3279);
+    private final Pose park = poseFactory.of(14, 94, 103.6721);
     private final Pose parkControl1 = poseFactory.of(27, 40, 0);
 
     public Path shootpreload() {
@@ -39,7 +45,7 @@ public class PartnerHasNoAuto extends RobotOpMode {
     }
 
     public Path collectflower() {
-        return line(shootpreload, collectflower).constant(collectflower)
+        return line(shootpreload, collectflower).linear(collectflowerStart, collectflower)
                 .with(
                         Constants.foresightConfig.maxPathSpeed.at(0.8)
 //                        Constants.foresightConfig.maxDecelerationScale.at(0.75),
@@ -48,24 +54,25 @@ public class PartnerHasNoAuto extends RobotOpMode {
     }
 
     public Path shootflower() {
-        return curve(collectflower, shootflowerControl1, shootflower).tangent()
-                .with(
-                        Constants.foresightConfig.maxPathSpeed.at(0.7)
+        return curve(collectflower, shootflowerControl1, shootflower).linear(shootflowerStart, shootflower)
+ //               .with(
+//                        Constants.foresightConfig.maxPathSpeed.at(0.7)
 //                        Constants.foresightConfig.maxDecelerationScale.at(0.75),
 //                        Constants.foresightConfig.headingDriveRatio.at(0.7)
-                );
+//                )
+        ;
     }
 
     public Path collectflowertwo() {
-        return line(shootflower, collectflowertwo).constant(collectflowertwo);
+        return line(shootflower, collectflowertwo).linear(collectflowertwoStart, collectflowertwo);
     }
 
     public Path shootflowertwo() {
-        return line(collectflowertwo, shootflowertwo).constant(shootflowertwo);
+        return line(collectflowertwo, shootflowertwo).linear(shootflowertwoStart, shootflowertwo);
     }
 
     public Path lineupgarden() {
-        return curve(shootflowertwo, lineupgardenControl1, lineupgarden).tangent()
+        return curve(shootflowertwo, lineupgardenControl1, lineupgarden).linear(lineupgardenStart, lineupgarden)
                 .with(
                         Constants.foresightConfig.maxPathSpeed.at(0.8)
                 );
@@ -76,7 +83,7 @@ public class PartnerHasNoAuto extends RobotOpMode {
     }
 
     public Path shootgarden() {
-        return line(collectgarden, shootgarden).constant(shootgarden);
+        return line(collectgarden, shootgarden).linear(shootgardenStart, shootgarden);
     }
 
     public Path park() {
@@ -111,15 +118,22 @@ race( - like parallel, but as soon as 1 finishes, it cancels the others and move
         schedule(
                 sequential(
                 follow(drivetrain.follower, shootpreload()),
-                        waitMs(2000),
+                        waitMs(1000),
                 // Add launch command here
                 follow(drivetrain.follower, collectflower()),
+                        waitMs(1000),
                         follow(drivetrain.follower, shootflower()),
+                        waitMs(1000),
                         follow(drivetrain.follower, collectflowertwo()),
+                        waitMs(1000),
                         follow(drivetrain.follower, shootflowertwo()),
+                        waitMs(1000),
                         follow(drivetrain.follower, lineupgarden()),
+                        waitMs(1000),
                         follow(drivetrain.follower, collectgarden()),
+                        waitMs(1000),
                         follow(drivetrain.follower, shootgarden()),
+                        waitMs(1000),
                         follow(drivetrain.follower, park())
 
         ));

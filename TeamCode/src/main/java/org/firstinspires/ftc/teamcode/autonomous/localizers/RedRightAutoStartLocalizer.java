@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.util.Alliance;
 import org.firstinspires.ftc.teamcode.util.RobotOpMode;
 
-@Utility
+
 @Autonomous
 public class RedRightAutoStartLocalizer extends LinearOpMode {
     @Override
