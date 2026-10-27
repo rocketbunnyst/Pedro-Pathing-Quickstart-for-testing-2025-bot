@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.vision.Vision;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public abstract class RobotOpMode extends OpMode {
     //protected Hood hood;
     //protected IntakeSensor intakeSensor;
     //protected Leds leds;
+    protected Vision vision;
     protected Context context;
 
     protected static Alliance alliance() {
@@ -47,15 +49,17 @@ public abstract class RobotOpMode extends OpMode {
         //hood = new Hood(context);
         //intakeSensor = new IntakeSensor(context);
         //leds = new Leds(context);
+        vision = new Vision(context);
 
         schedule(
                 drivetrain.periodic(),
                 //turret.periodic(),
                 flywheel.periodic(),
-                intake.periodic()
+                intake.periodic(),
                 //hood.periodic(),
                 //intakeSensor.periodic(),
                 //leds.periodic()
+                vision.periodic()
         );
 
         hubs = hardwareMap.getAll(LynxModule.class);
