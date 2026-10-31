@@ -23,7 +23,7 @@ public abstract class RobotOpMode extends OpMode {
     //protected Hood hood;
     //protected IntakeSensor intakeSensor;
     //protected Leds leds;
-    protected Vision vision;
+    //protected Vision vision;
     protected Context context;
 
     protected static Alliance alliance() {
@@ -49,17 +49,17 @@ public abstract class RobotOpMode extends OpMode {
         //hood = new Hood(context);
         //intakeSensor = new IntakeSensor(context);
         //leds = new Leds(context);
-        vision = new Vision(context);
+       // vision = new Vision(context);
 
         schedule(
                 drivetrain.periodic(),
                 //turret.periodic(),
                 flywheel.periodic(),
-                intake.periodic(),
+                intake.periodic()
                 //hood.periodic(),
                 //intakeSensor.periodic(),
                 //leds.periodic()
-                vision.periodic()
+                //vision.periodic()
         );
 
         hubs = hardwareMap.getAll(LynxModule.class);

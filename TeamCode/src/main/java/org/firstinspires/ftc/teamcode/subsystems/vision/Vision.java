@@ -5,6 +5,7 @@ import static com.pedropathing.ivy.commands.Commands.infinite;
 import android.util.Size;
 
 import com.pedropathing.ivy.Command;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
+@Disabled
 public class Vision {
     /**
      * The variable to store our instance of the AprilTag processor/pipeline.
