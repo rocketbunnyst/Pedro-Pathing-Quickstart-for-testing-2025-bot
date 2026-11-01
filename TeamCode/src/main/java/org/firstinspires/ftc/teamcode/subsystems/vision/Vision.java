@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.subsystems.vision;
 
 import static com.pedropathing.ivy.commands.Commands.infinite;
+import static com.pedropathing.ivy.commands.Commands.instant;
+import static com.pedropathing.ivy.commands.Commands.waitUntil;
 
 import android.util.Size;
 
 import com.pedropathing.ivy.Command;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -13,11 +14,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.subsystems.vision.hivevision.BallDetectorPipeline;
+import org.firstinspires.ftc.teamcode.util.Alliance;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-@Disabled
+
+import java.util.List;
+
 public class Vision {
     /**
      * The variable to store our instance of the AprilTag processor/pipeline.
@@ -62,7 +68,10 @@ public class Vision {
     YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
             0, -90, 0, 0);
     private final Context context;
-    private Mode mode = Mode.OFF;
+    private Mode mode = Mode.STREAMINGBOTH;
+
+    //FSM tracker variables
+    private boolean camOff = false;
     public Vision(Context context) {
         this.context = context;
 
@@ -108,33 +117,130 @@ public class Vision {
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
                 .enableLiveView(true)
+                .setAutoStopLiveView(true)
                 .build();
     }
 
-    public Command periodic() {
+    // Streaming status setting commands for CPU management
+    public Command stopStreaming() {
+        return instant(() -> mode = Mode.STOPSTREAMING).requiring(visionPortal);
+    }
+
+    public Command hiveWatch() {
+        return instant(() -> mode = Mode.HIVEWATCH).requiring(visionPortal);
+    }
+
+    public Command ballDetection() {
+        return instant(() -> mode = Mode.BALLDETECTION).requiring(visionPortal);
+    }
+
+    public Command close() {
+        return instant(() -> mode = Mode.CLOSED).requiring(visionPortal);
+    }
+
+    // Checks to see if the Hive is up and ready to score
+    // by looking for the opposite Hive April Tag Orientation to be upside-down
+    // Vision Mode must be HiveWatch to use these commands
+    public Command checkIfLeftHiveUp(Alliance alliance) {
+        return waitUntil(() -> isLeftHiveUp(alliance));
+    }
+
+    public Command checkIfRightHiveUp(Alliance alliance) {
+        return waitUntil(() -> isRightHiveUp(alliance));
+    }
+
+    public Command periodic() { //use to control camera streaming settings to save CPU
         return infinite(() -> {
             switch (mode) {
-                case OFF:
+                case STOPSTREAMING:
                     // Save CPU resources; can resume streaming when needed.
-                    // visionPortal.stopStreaming(); write into initialization code, use ivy command builder
-                    return;
+                    // check to see if stream is already off, if not, turn it off
+                    if (visionPortal.getCameraState() != VisionPortal.CameraState.CAMERA_DEVICE_READY ||
+                            visionPortal.getCameraState() != (VisionPortal.CameraState.STOPPING_STREAM)) {
+                        visionPortal.stopStreaming();
+                    }
+                    break;
+                case STREAMINGBOTH: // everything on during init so that we can use LiveView
+                    if (visionPortal.getCameraState() == VisionPortal.CameraState.CAMERA_DEVICE_READY ||
+                            visionPortal.getCameraState() == (VisionPortal.CameraState.STOPPING_STREAM)) {
+                        visionPortal.resumeStreaming();
+                    }
+                    visionPortal.setProcessorEnabled(ballProcessor, true);
+                    visionPortal.setProcessorEnabled(tagProcessor, true);
+                    break;
                 case HIVEWATCH:
-                    // visionPortal.resumeStreaming(); write into initialization code for this mode
-                    // write out what to do to check for a hive
+                    if (visionPortal.getCameraState() == VisionPortal.CameraState.CAMERA_DEVICE_READY ||
+                            visionPortal.getCameraState() == (VisionPortal.CameraState.STOPPING_STREAM)) {
+                    visionPortal.resumeStreaming(); }
+                    visionPortal.setProcessorEnabled(ballProcessor, false);
+                    visionPortal.setProcessorEnabled(tagProcessor, true);
+                    visionPortal.stopLiveView(); //don't need this during Auton
                     break;
                 case BALLDETECTION:
-                    // write out what to do to check for balls
+                    if (visionPortal.getCameraState() == VisionPortal.CameraState.CAMERA_DEVICE_READY ||
+                            visionPortal.getCameraState() == (VisionPortal.CameraState.STOPPING_STREAM)) {
+                        visionPortal.resumeStreaming(); }
+                    visionPortal.setProcessorEnabled(ballProcessor, true);
+                    visionPortal.setProcessorEnabled(tagProcessor, false);
+                    visionPortal.stopLiveView(); //don't need this during Auton
+                    break;
+                case CLOSED: // use only if not planning to use camera during OpMode. Cannot be reopened
+                    visionPortal.close();
                     break;
             }
 
+
             context.telemetry.addData("Vision/mode", mode);
+            context.telemetry.addData("Stream Status", visionPortal.getCameraState());
         });
 
     }
 
+    private Boolean isLeftHiveUp(Alliance alliance) {
+        List<AprilTagDetection> currentDetections = tagProcessor.getDetections();
+
+        for (AprilTagDetection detection : currentDetections) {
+            AprilTagClusterDetection clusterDet = (AprilTagClusterDetection) detection;
+            if (alliance == Alliance.RED) { //look for Red Scoring Tag to be upside down
+                if (clusterDet.metadata.name.equals("RED SCORING") && clusterDet.ftcPose.roll > Math.abs(90)) {
+                    context.telemetry.addData("Vision/isLeftHiveUp angle", clusterDet.ftcPose.roll);
+                    return true;
+                }
+            } else if (alliance == Alliance.BLUE) { //look for Blue Audience Tag to be upside down
+                if (clusterDet.metadata.name.equals("BLUE AUDIENCE") && clusterDet.ftcPose.roll > Math.abs(90)) {
+                    context.telemetry.addData("Vision/isLeftHiveUp angle", clusterDet.ftcPose.roll);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Boolean isRightHiveUp(Alliance alliance) {
+        List<AprilTagDetection> currentDetections = tagProcessor.getDetections();
+
+        for (AprilTagDetection detection : currentDetections) {
+            AprilTagClusterDetection clusterDet = (AprilTagClusterDetection) detection;
+            if (alliance == Alliance.RED) { //look for Red Audience Tag to be upside down
+                if (clusterDet.metadata.name.equals("RED AUDIENCE") && clusterDet.ftcPose.roll > Math.abs(90)) {
+                    context.telemetry.addData("Vision/isLeftHiveUp angle", clusterDet.ftcPose.roll);
+                    return true;
+                }
+            } else if (alliance == Alliance.BLUE) { //look for Blue Scoring Tag to be upside down
+                if (clusterDet.metadata.name.equals("BLUE SCORING") && clusterDet.ftcPose.roll > Math.abs(90)) {
+                    context.telemetry.addData("Vision/isLeftHiveUp angle", clusterDet.ftcPose.roll);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     enum Mode {
-        OFF,
+        STOPSTREAMING,
+        STREAMINGBOTH,
         HIVEWATCH,
-        BALLDETECTION
+        BALLDETECTION,
+        CLOSED
     }
 }

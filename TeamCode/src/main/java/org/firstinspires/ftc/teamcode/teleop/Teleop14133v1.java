@@ -14,6 +14,7 @@ public class Teleop14133v1 extends RobotOpMode {
         super.init(); //calls all init() methods in RobotOpMode
 
         drivetrain.usePreviousStartingPose();
+        vision.close(); //turns off Vision, frees up CPU
     }
 
     @Override
