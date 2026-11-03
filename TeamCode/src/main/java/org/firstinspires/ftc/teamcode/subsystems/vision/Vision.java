@@ -28,14 +28,14 @@ public class Vision {
     /**
      * The variable to store our instance of the AprilTag processor/pipeline.
      */
-    private AprilTagProcessor tagProcessor;
+    private final AprilTagProcessor tagProcessor;
 
-    private BallDetectorPipeline ballProcessor;
+    private final BallDetectorPipeline ballProcessor;
 
     /**
      * The variable to store our instance of the vision portal.
      */
-    private VisionPortal visionPortal;
+    private final VisionPortal visionPortal;
 
     public WebcamName webCam;
 
@@ -105,6 +105,8 @@ public class Vision {
         // Decimation = 3 ..  Detect 5" Tag from 10 feet away at 30 Frames Per Second (default)
         // Note: Decimation can be changed on-the-fly to adapt during a match.
         tagProcessor.setDecimation(3); //used 1 in Decode
+
+        ballProcessor = new BallDetectorPipeline();
 
         visionPortal = new VisionPortal.Builder()
                 // Set and enable the processor.

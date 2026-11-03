@@ -47,7 +47,7 @@ public class Teleop14133v1 extends RobotOpMode {
             // Run field centric drive with AutoHold
             drivetrain.fieldCentricDrive(
                     -gamepad1.left_stick_y,
-                    gamepad1.left_stick_x,
+                    -gamepad1.left_stick_x,
                     gamepad1.right_stick_x
             );
         });
