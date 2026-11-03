@@ -50,6 +50,7 @@ public class RightSideExample extends RobotOpMode {
     instant(intake::intake) -- starts the intake sequence - it will run until it gets 3 balls, make sure to turn it off manually as a safeguard!
     instant(intake::off) -- turns off the intake
     waitMs(2000) -- waits for 2 seconds (2000 Milli-Seconds)
+    vision.checkIfRightHiveUp(alliance()) //waits until the right hive is up and then returns true. Can also do Left Hive
 
     sequential( - does each command in list order
     parallel( - does each command at the same time, waiting until all finish before moving on
