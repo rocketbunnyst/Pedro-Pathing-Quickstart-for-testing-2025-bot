@@ -51,17 +51,19 @@ public class BallDetectorPipeline extends BallBlobPipeline {
      *    Real balls on the FTC field are small-to-mid and roughly square;
      *    robot side panels are giant or elongated. Tune for your camera.
      * ----------------------------------------------------------------*/
-    private static final int   MIN_AREA_PX  = 900;    // kills speckle patches
-    private static final int   MAX_AREA_PX  = 12000;  // kills big robot panels
+    private static final int scale = 640 * 480 / 1920 * 1080; //I added to reduce resolution. CONFIRM
+
+    private static final int   MIN_AREA_PX  = 900 * scale;    // kills speckle patches
+    private static final int   MAX_AREA_PX  = 12000 * scale;  // kills big robot panels
     private static final double MIN_ASPECT  = 0.71;   // near-square balls only
     private static final double MAX_ASPECT  = 1.4;
     private static final double MIN_FILL    = 0.5;    // contourArea / rectArea
     private static final double MAX_FILL    = 1.3;
 
     /** Typical real-ball contour area per color (px at camera resolution). */
-    private static final double EXPECT_YELLOW_AREA = 3500;
-    private static final double EXPECT_RED_AREA    = 4200;
-    private static final double EXPECT_BLUE_AREA   = 4200;
+    private static final double EXPECT_YELLOW_AREA = 3500 * scale;
+    private static final double EXPECT_RED_AREA    = 4200 * scale;
+    private static final double EXPECT_BLUE_AREA   = 4200 * scale;
 
     @Override
     protected double expectArea(BallColor c) {

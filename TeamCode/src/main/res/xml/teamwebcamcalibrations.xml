@@ -158,4 +158,29 @@
 
     <!-- ======================================================================================= -->
 
+    <!--
+    The FTC SDK natively supports OpenCV-style camera models. In the configuration files (such as teamwebcamcalibrations.xml), the distortion coefficients are defined as an 8-element float array in the following structure:
+[r0,r1,t0,t1,r2,r3,r4,r5]
+
+These elements break down into two core types of lens geometric distortion:
+• Radial Distortion (r or k values): Corrects for lens curvature that makes straight lines appear bowed outward (barrel distortion) or pinched inward (pincushion distortion).
+	• r0, r1, r2 correspond to the standard k₁, k₂, k₃ radial coefficients.
+	• r3, r4, r5 map to higher-order parameters (k₄, k₅, k₆), which are generally used for extreme fish-eye or wide-angle lenses.
+• Tangential Distortion (t or p values): Corrects for physical misalignment where the lens assembly is not perfectly parallel to the camera's image sensor, causing a skewed or tilted projection.
+	• t0 and t1 correspond to the standard p₁ and p₂ tangential coefficients.
+
+	Float Casting/Matching: Adding an f or F explicitly tells the code and XML parser that the number is a float (32-bit floating-point number), which matches the data type expected by the FTC SDK's lens intrinsic variables (such as focal length, fx and fy).d
+    -->
+
+    <!-- Arducam ezBOX-VGA GS, Calibrated by Becca England, 2026.11.05 using 3DF Zephyr -->
+    <Camera vid="0x0C40" pid="0x0633">
+        <Calibration
+            size="640 480"
+            focalLength="222.207179004f, 222.207179004f"
+            principalPoint="321.077718402f, 226.073280165f"
+            distortionCoefficients="0.279028547604, -0.252171325346, 0.000494844184176, 0.000546178564814, 0.0540313623694, 0, 0, 0"
+            />
+    </Camera>
+
+
 </Calibrations>

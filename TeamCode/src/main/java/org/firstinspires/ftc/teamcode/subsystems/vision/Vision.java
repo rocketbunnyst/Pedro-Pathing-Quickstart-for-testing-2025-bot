@@ -67,6 +67,20 @@ public class Vision {
             0, 8.5, 10.5, 0);
     YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
             0, -90, 0, 0);
+
+    /**
+    * Arducam ezBOX-VGA GS Calibration Values from 3df Zephyr Free App
+     * Global Shutter, Fixed Focus
+     * MJPG Framerate 640x480@120fps
+     * FOV 166°(D)x130°(H)x100°(H)
+     */
+    public double fx =  252.061;
+    public double fy = 252.061;
+    public double cx = 330.81;
+    public double cy = 189.91;
+
+
+
     private final Context context;
     private Mode mode = Mode.STREAMINGBOTH;
 
@@ -94,6 +108,7 @@ public class Vision {
                 // to load a predefined calibration for your camera.
                 //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
                 // ... these parameters are fx, fy, cx, cy.
+                //.setLensIntrinsics(fx, fy, cx, cy) //for Arducam. Commented out because it's in the xml calibration file
 
                 .build();
 
