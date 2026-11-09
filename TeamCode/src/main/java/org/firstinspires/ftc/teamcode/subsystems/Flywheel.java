@@ -21,7 +21,8 @@ public final class Flywheel {
     private VoltageSensor batteryVoltageSensor;
     private final Context context;
     private Mode mode = Mode.OFF;
-    private double target = 1500; //put at 0 once there is a shooting controller
+    private double target = 0; //was 1500, put at 0 once there is a shooting controller
+    private double MAX_VELOCITY = 2000; // max allowed target velocity
 
     public Flywheel(Context context) {
         this.context = context;
@@ -51,7 +52,10 @@ public final class Flywheel {
     }
 
     public void setTarget(double target) {
-        this.target = target;
+        if (target > MAX_VELOCITY) {
+            this.target = MAX_VELOCITY;
+        } else {
+        this.target = target; }
     }
 
     public void off() {

@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.math.ShootingController;
 import org.firstinspires.ftc.teamcode.util.Alliance;
 import org.firstinspires.ftc.teamcode.util.RobotOpMode;
 
 @TeleOp
 public class Teleop14133v1 extends RobotOpMode {
+    private ShootingController shootingController;
 
     @Override
     public void init() {
@@ -15,6 +17,7 @@ public class Teleop14133v1 extends RobotOpMode {
 
         drivetrain.usePreviousStartingPose();
         vision.close(); //turns off Vision, frees up CPU
+        shootingController = new ShootingController(context, flywheel);
     }
 
     @Override
@@ -50,6 +53,14 @@ public class Teleop14133v1 extends RobotOpMode {
                     -gamepad1.left_stick_x,
                     gamepad1.right_stick_x
             );
+
+            // Controls flywheel speed, eventually hood/turret based on field location and movement speed for SOTM
+            shootingController.prepareForLocation(
+                    drivetrain.follower.pose(),
+                    drivetrain.follower.velocity().toVector(),
+                    drivetrain.follower.velocity().omega
+            );
+
         });
         }
 }
