@@ -72,7 +72,9 @@ public final class Drivetrain implements AutoCloseable {
                 follower.pose().heading()
         );
 
-        ManualDrive.driveOrHold(follower, powers); //automatically holds position when driver input stops
+        /** Use one or the other */
+        follower.manual(powers);                     // does not hold position when driver input stops
+        //ManualDrive.driveOrHold(follower, powers); //automatically holds position when driver input stops
     }
 
     public void update() {

@@ -105,6 +105,10 @@ public final class Intake {
         return launch().then(waitMs(2000)).then(off()).setConflictBehavior(ConflictBehavior.OVERRIDE);
     }
 
+    public Command toggleLaunch() { // if mode is not Launch, run intake. Else, run off. For Feed and Launch Mode
+        return conditional(() -> mode != Mode.LAUNCH, launch(), off());
+    }
+
     public Command toggleIntake() { // if mode is not Intake, run intake. Else, run off.
         return conditional(() -> mode != Mode.INTAKE, intake(), off());
     }

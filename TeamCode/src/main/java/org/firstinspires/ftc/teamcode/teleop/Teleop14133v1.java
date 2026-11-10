@@ -47,7 +47,7 @@ public class Teleop14133v1 extends RobotOpMode {
             // Y to Reset Odometry, intake face in at right corner
             if (gamepad1.y) drivetrain.follower.setPose(new Pose(8, 8, Math.toRadians(180)));
 
-            // Run field centric drive with AutoHold
+            // Run field centric drive - check to see if AutoHold is activated
             drivetrain.fieldCentricDrive(
                     -gamepad1.left_stick_y,
                     -gamepad1.left_stick_x,
