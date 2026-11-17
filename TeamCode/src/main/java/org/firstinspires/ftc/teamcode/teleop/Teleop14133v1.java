@@ -30,13 +30,13 @@ public class Teleop14133v1 extends RobotOpMode {
         wrapLoop(() -> {
 
             // Right Bumper to launch
-            if (gamepad1.rightBumperWasPressed()) intake.launch3();
+            if (gamepad1.rightBumperWasPressed()) intake.launch3().schedule();
 
             // Left Bumper to toggle intake
-            if (gamepad1.leftBumperWasPressed()) intake.toggleIntake();
+            if (gamepad1.leftBumperWasPressed()) intake.toggleIntake().schedule();
 
             // X Toggles flywheel on and off
-            if (gamepad1.xWasPressed()) flywheel.toggle();
+            if (gamepad1.xWasPressed()) flywheel.toggle(); //doesn't need to be scheduled because it directly updates a state
 
             // Auto aim unlocks if the right stick is moved
             if (Math.abs(gamepad1.right_stick_x) >= 0.1) drivetrain.unlockAutoAim();

@@ -22,7 +22,7 @@ public final class Flywheel {
     private final Context context;
     private Mode mode = Mode.OFF;
     private double target = 0; //was 1500, put at 0 once there is a shooting controller
-    private double MAX_VELOCITY = 2000; // max allowed target velocity
+    private double MAX_VELOCITY = 1500; // max allowed target velocity
 
     public Flywheel(Context context) {
         this.context = context;

@@ -28,7 +28,7 @@ public class FeedandLaunch extends RobotOpMode {
         wrapLoop(() -> {
 
             // Left Bumper to toggle feed mode
-            if (gamepad1.leftBumperWasPressed()) intake.toggleLaunch();
+            if (gamepad1.leftBumperWasPressed()) intake.toggleLaunch().schedule();
 
             // X Toggles flywheel on and off
             if (gamepad1.xWasPressed()) flywheel.toggle();
