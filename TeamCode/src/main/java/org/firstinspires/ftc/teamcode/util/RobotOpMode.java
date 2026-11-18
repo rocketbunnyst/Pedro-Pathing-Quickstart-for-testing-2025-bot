@@ -89,7 +89,7 @@ public abstract class RobotOpMode extends OpMode {
         drivetrain.update(); //updates follower
         context.telemetry.addData("Robot/alliance", alliance());
 
-        runnable.run();
+        runnable.run(); // does everything in wraploop - all the controller commands
 
         Scheduler.execute();
         context.telemetry.update();
